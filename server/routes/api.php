@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ScooterController;
 use App\Http\Controllers\RentController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,14 +21,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| API Routes - Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+});
+
+/*
+|--------------------------------------------------------------------------
 | API Routes - Самокаты
 |--------------------------------------------------------------------------
 */
 
-// Публичный доступ (без авторизации)
 Route::get('/scooters/available', [ScooterController::class, 'available']);
 
-// Управление (требуется авторизация)
 Route::middleware('auth:sanctum')->prefix('management/scooters')->group(function () {
     Route::get('/', [ScooterController::class, 'index']);
     Route::post('/', [ScooterController::class, 'store']);
@@ -43,17 +52,15 @@ Route::middleware('auth:sanctum')->prefix('management/scooters')->group(function
 |--------------------------------------------------------------------------
 */
 
-// Эндпоинты для пользователей (требуется авторизация)
 Route::middleware('auth:sanctum')->prefix('rents')->group(function () {
-    Route::get('/active', [RentController::class, 'active']);   // Только своя активная аренда
-    Route::get('/history', [RentController::class, 'history']); // Только своя история
+    Route::get('/active', [RentController::class, 'active']);
+    Route::get('/history', [RentController::class, 'history']);
 });
 
-// Управление арендами (для менеджеров/админов)
 Route::middleware('auth:sanctum')->prefix('management/rents')->group(function () {
-    Route::get('/', [RentController::class, 'index']);               // Все аренды
-    Route::post('/', [RentController::class, 'store']);               // Создать аренду
-    Route::get('/stats', [RentController::class, 'stats']);           // Статистика
-    Route::get('/{id}', [RentController::class, 'show']);             // Просмотр аренды
-    Route::put('/{id}/complete', [RentController::class, 'complete']); // Завершить аренду
+    Route::get('/', [RentController::class, 'index']);
+    Route::post('/', [RentController::class, 'store']);
+    Route::get('/stats', [RentController::class, 'stats']);
+    Route::get('/{id}', [RentController::class, 'show']);
+    Route::put('/{id}/complete', [RentController::class, 'complete']);
 });
