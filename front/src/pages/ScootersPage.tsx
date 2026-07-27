@@ -2,10 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { scooterService } from '../services/scooter.service';
 import { Scooter } from '../types';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import L from 'leaflet';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ScooterModal from '../components/ScooterModal';
+
+// Фикс для иконок Leaflet
+import 'leaflet/dist/leaflet.css';
+
+// Исправление проблемы с иконками маркеров
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
 
 const statusColors: Record<string, string> = {
   available: 'bg-green-100 text-green-800',
@@ -20,15 +31,6 @@ const statusLabels: Record<string, string> = {
   maintenance: 'Обслуживание',
   offline: 'Оффлайн',
 };
-
-const scooterIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 const ScootersPage: React.FC = () => {
   const [scooters, setScooters] = useState<Scooter[]>([]);
@@ -45,6 +47,7 @@ const ScootersPage: React.FC = () => {
 
   const loadScooters = async () => {
     try {
+      setLoading(true);
       const params: any = { per_page: 100 };
       if (statusFilter) params.status = statusFilter;
       if (search) params.model = search;
@@ -53,9 +56,14 @@ const ScootersPage: React.FC = () => {
       setScooters(response.data);
     } catch (error) {
       console.error('Error loading scooters:', error);
+      toast.error('Ошибка загрузки самокатов');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = () => {
+    loadScooters();
   };
 
   const handleCreate = async (scooter: Partial<Scooter>) => {
@@ -99,6 +107,14 @@ const ScootersPage: React.FC = () => {
     return 'text-red-600';
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -125,7 +141,7 @@ const ScootersPage: React.FC = () => {
               placeholder="Поиск по модели..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyUp={(e) => e.key === 'Enter' && loadScooters()}
+              onKeyUp={(e) => e.key === 'Enter' && handleSearch()}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
@@ -232,38 +248,40 @@ const ScootersPage: React.FC = () => {
 
       {/* Карта */}
       {viewMode === 'map' && (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ height: '600px' }}>
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ height: '600px', width: '100%' }}>
           <MapContainer
             center={[55.7558, 37.6173]}
             zoom={12}
             style={{ height: '100%', width: '100%' }}
+            scrollWheelZoom={true}
           >
             <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; OpenStreetMap contributors'
             />
-            {scooters.map((scooter) => (
-              <Marker
-                key={scooter.id}
-                position={[scooter.latitude, scooter.longitude]}
-                icon={scooterIcon}
-              >
-                <Popup>
-                  <div className="p-2">
-                    <h3 className="font-bold">{scooter.model}</h3>
-                    <p className="text-sm">
-                      Статус: {statusLabels[scooter.status]}
-                    </p>
-                    <p className="text-sm">
-                      Заряд: {scooter.battery_level}%
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      ID: #{scooter.id}
-                    </p>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+            {scooters
+              .filter(s => s.latitude && s.longitude)
+              .map((scooter) => (
+                <Marker
+                  key={scooter.id}
+                  position={[scooter.latitude, scooter.longitude]}
+                >
+                  <Popup>
+                    <div className="p-2 min-w-[150px]">
+                      <h3 className="font-bold text-sm">{scooter.model}</h3>
+                      <p className="text-xs mt-1">
+                        Статус: <span className="font-medium">{statusLabels[scooter.status]}</span>
+                      </p>
+                      <p className="text-xs">
+                        Заряд: <span className="font-medium">{scooter.battery_level}%</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        ID: #{scooter.id}
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
           </MapContainer>
         </div>
       )}
