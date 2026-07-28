@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ScootersPage from './pages/ScootersPage';
+import RentsPage from './pages/RentsPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,10 +48,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-900">Аренды</h2>
-                <p className="text-gray-500 mt-2">Страница в разработке</p>
-              </div>
+              <RentsPage />
             </Layout>
           </ProtectedRoute>
         }
