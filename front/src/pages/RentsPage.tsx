@@ -35,9 +35,8 @@ const RentsPage: React.FC = () => {
       setLoading(true);
       const params: any = { per_page: 100 };
       if (statusFilter) params.status = statusFilter;
-      if (phoneFilter) params.user_phone = phoneFilter;
       
-      const response = await rentService.getAll(params);
+      const response = await rentService.getMyRents(params);
       setRents(response.data);
     } catch (error) {
       console.error('Error loading rents:', error);
