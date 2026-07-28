@@ -250,8 +250,8 @@ const ScootersPage: React.FC = () => {
       {viewMode === 'map' && (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ height: '600px', width: '100%' }}>
           <MapContainer
-            center={[55.7558, 37.6173]}
-            zoom={12}
+            center={[45.7558, 38.6173]}
+            zoom={7}
             style={{ height: '100%', width: '100%' }}
             scrollWheelZoom={true}
           >
