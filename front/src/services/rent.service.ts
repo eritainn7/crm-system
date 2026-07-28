@@ -2,45 +2,38 @@ import api from './api';
 import { ApiResponse, Rent } from '../types';
 
 export const rentService = {
-  async getAll(params?: {
+  // Мои аренды (все статусы)
+  async getMyRents(params?: {
     status?: string;
-    user_phone?: string;
-    scooter_id?: number;
     per_page?: number;
   }): Promise<ApiResponse<Rent[]>> {
-    const { data } = await api.get('/management/rents', { params });
+    const { data } = await api.get('/rents', { params });
     return data;
   },
 
-  async getById(id: number): Promise<{ data: Rent }> {
-    const { data } = await api.get(`/management/rents/${id}`);
-    return data;
-  },
-
+  // Создать аренду
   async create(scooterId: number): Promise<{ data: Rent }> {
-    const { data } = await api.post('/management/rents', {
+    const { data } = await api.post('/rents', {
       scooter_id: scooterId,
     });
     return data;
   },
 
+  // Завершить аренду
   async complete(id: number): Promise<{ data: Rent }> {
-    const { data } = await api.put(`/management/rents/${id}/complete`);
+    const { data } = await api.put(`/rents/${id}/complete`);
     return data;
   },
 
+  // Активная аренда
   async getActive(): Promise<{ has_active_rent: boolean; data?: Rent }> {
     const { data } = await api.get('/rents/active');
     return data;
   },
 
+  // История аренд
   async getHistory(params?: { per_page?: number }): Promise<ApiResponse<Rent[]>> {
     const { data } = await api.get('/rents/history', { params });
-    return data;
-  },
-
-  async getStats(): Promise<any> {
-    const { data } = await api.get('/management/rents/stats');
     return data;
   },
 };
