@@ -14,7 +14,6 @@ class RentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_phone' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
             'scooter_id' => 'required|integer|exists:scooters,id',
         ];
     }
@@ -22,8 +21,6 @@ class RentRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_phone.required' => 'Номер телефона обязателен',
-            'user_phone.regex' => 'Неверный формат номера телефона',
             'scooter_id.required' => 'ID самоката обязателен',
             'scooter_id.exists' => 'Самокат не найден',
         ];
