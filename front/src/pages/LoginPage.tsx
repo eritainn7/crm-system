@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Bike, LogIn, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import PhoneInput from '../components/PhoneInput';
 
 const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState(false);
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('+7');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,16 +15,23 @@ const LoginPage: React.FC = () => {
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
+  // Очистка номера от форматирования
+  const cleanPhone = (phone: string): string => {
+    return phone.replace(/[\s\(\)\-]/g, '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
+      const cleanNumber = cleanPhone(phone);
+      
       if (isRegister) {
-        await register(fullName, phone, password);
+        await register(fullName, cleanNumber, password);
         toast.success('Регистрация успешна!');
       } else {
-        await login(phone, password);
+        await login(cleanNumber, password);
         toast.success('Вход выполнен!');
       }
       navigate('/');
@@ -73,13 +81,9 @@ const LoginPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Номер телефона
             </label>
-            <input
-              type="tel"
+            <PhoneInput
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="+79001234567"
-              required
+              onChange={setPhone}
             />
           </div>
 
@@ -120,7 +124,10 @@ const LoginPage: React.FC = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => setIsRegister(!isRegister)}
+            onClick={() => {
+              setIsRegister(!isRegister);
+              setPhone('+7');
+            }}
             className="text-primary-600 hover:text-primary-700 text-sm font-medium"
           >
             {isRegister
