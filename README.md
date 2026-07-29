@@ -91,3 +91,13 @@ docker exec -it scooter-server php artisan db:seed # Данные о самок�
 ```bash
 docker-compose down # Остановка сервисов. Добавить флаг -v для удаления состояния
 ```
+
+### После запуска(обязательно)
+
+```bash
+docker exec -it scooter-server cp .env.example .env  
+```
+
+```bash
+docker exec -it scooter-server php artisan key:generate --force 
+```
