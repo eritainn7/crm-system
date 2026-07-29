@@ -77,3 +77,17 @@ graph TB
 ```bash
 git clone https://github.com/your-username/crm-system.git
 cd crm-system
+```
+### 2. Запуск
+
+```bash
+docker-compose up -d # Сборка и запуск в фоне
+```
+
+```bash
+docker exec -it scooter-server php artisan db:seed # Данные о самокатах(опционально)
+```
+
+```bash
+docker-compose down # Остановка сервисов. Добавить флаг -v для удаления состояния
+```
