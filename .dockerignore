@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Временные файлы
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Документация
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Docker (сам себя)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# Скрипты и конфиги, не нужные в контексте сборки
+.env
+.env.*
+!.env.example
+Makefile
+*.sh
+*.bat
