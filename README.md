@@ -28,3 +28,52 @@ graph TB
     
     User([Пользователь]) -->|HTTP :80| Frontend
     Admin([Администратор]) -->|HTTP :8000| Backend
+```
+
+
+### Компоненты системы
+
+| Компонент | Технология | Порт | Описание |
+|-----------|-----------|------|----------|
+| Frontend | React + Nginx | 80 | SPA приложение с проксированием API |
+| Backend | Laravel + PHP-FPM | 9000 | REST API с аутентификацией |
+| Server Nginx | Nginx | 8000 | Прокси для Laravel API |
+| Database | PostgreSQL 16 | 5432 | Основное хранилище данных |
+
+## Технологический стек
+
+### Frontend
+- **React 19** — библиотека для построения пользовательских интерфейсов
+- **TypeScript 4.9** — типизированный JavaScript
+- **TailwindCSS 3.4** — utility-first CSS фреймворк
+- **React Router 7** — маршрутизация SPA
+- **Axios** — HTTP клиент с интерцепторами
+- **React Leaflet** — интеграция карт
+- **Lucide React** — набор иконок
+- **React Hot Toast** — уведомления
+
+### Backend
+- **Laravel 13.8** — PHP фреймворк
+- **PostgreSQL 16** — реляционная база данных
+- **Laravel Sanctum** — аутентификация по токенам
+- **PHP 8.3** — язык программирования
+
+### DevOps
+- **Docker** — контейнеризация
+- **Docker Compose** — оркестрация контейнеров
+- **Nginx** — веб-сервер и прокси
+
+## Требования
+
+- Docker 20.10+
+- Docker Compose 2.0+
+- 1 GB свободной RAM
+- 5 GB свободного места на диске
+
+## Быстрый старт
+
+### 1. Клонирование репозитория
+
+```bash
+git clone https://github.com/your-username/crm-system.git
+cd crm-system
