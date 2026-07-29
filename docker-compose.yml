@@ -49,6 +49,8 @@ services:
       - scooter-network
     command: >
       sh -c "
+        php artisan key:generate --force
+
         chown -R www-data:www-data /var/www/html/storage
         chmod -R 775 /var/www/html/storage
         chown -R www-data:www-data /var/www/html/bootstrap/cache
@@ -58,6 +60,11 @@ services:
           echo 'Waiting for PostgreSQL...'
           sleep 2
         done
+
+        php artisan config:clear
+        php artisan cache:clear
+        php artisan route:clear
+        
         composer install --no-interaction --optimize-autoloader --no-dev
         php artisan migrate --force || echo 'Migration failed, but continuing...'
         php-fpm
