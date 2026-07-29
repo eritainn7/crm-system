@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-const API_URL = '/api';
+// Определяем базовый URL в зависимости от окружения
+const API_URL = `${window.location.protocol}//${window.location.hostname}/api`;
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
