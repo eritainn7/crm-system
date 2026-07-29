@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: scooter-postgres
+    environment:
+      POSTGRES_DB: auth_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - scooter-network
+
+  # Laravel Backend
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: scooter-server
+    environment:
+      APP_NAME: "Scooter Rent"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://192.168.1.70
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: auth_service
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      SANCTUM_STATEFUL_DOMAINS: "192.168.1.70,localhost"
+      SESSION_DRIVER: file
+    volumes:
+      - ./server:/var/www/html
+    depends_on:
+      - postgres
+    networks:
+      - scooter-network
+
+  # React Frontend с Nginx
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: scooter-front
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - scooter-network
+
+networks:
+  scooter-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
