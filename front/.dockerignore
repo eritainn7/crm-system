@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Зависимости (будут установлены заново в контейнере)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Сборка (будет создана заново в контейнере)
+build/
+dist/
+
+# Тесты
+src/__tests__/
+src/**/*.test.*
+src/**/*.spec.*
+coverage/
+
+# Документация
+README.md
+CHANGELOG.md
+LICENSE
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Временные файлы
+*.log
+.cache/
