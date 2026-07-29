@@ -63,10 +63,10 @@ graph TB
 - **Docker Compose** — оркестрация контейнеров
 - **Nginx** — веб-сервер и прокси
 
-## Требования
+## Требования(на другиях версиях тестов не было)
 
-- Docker 20.10+
-- Docker Compose 2.0+
+- Docker version 28.2.2, build 28.2.2-0ubuntu1~24.04.1
+- docker-compose version 1.29.2, build unknown
 - 1 GB свободной RAM
 - 5 GB свободного места на диске
 
