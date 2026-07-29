@@ -32,14 +32,14 @@ services:
       APP_NAME: "Scooter Rent"
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_URL: http://192.168.1.70
+      APP_URL: "http://${HOST_IP:-localhost}"
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
       DB_DATABASE: auth_service
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
-      SANCTUM_STATEFUL_DOMAINS: "192.168.1.70,localhost"
+      SANCTUM_STATEFUL_DOMAINS: "${HOST_IP:-localhost},localhost"
       SESSION_DRIVER: file
     volumes:
       - ./server:/var/www/html
