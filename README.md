@@ -19,3 +19,12 @@
 ## Архитектура
 
 Проект построен на микросервисной архитектуре с использованием контейнеризации:
+```mermaid
+graph TB
+    subgraph "Docker Environment"
+        Frontend[React + Nginx<br/>Port: 80] -->|API Proxy /api/*| Backend[Laravel PHP-FPM<br/>Port: 9000]
+        Backend --> Database[PostgreSQL 16<br/>Port: 5432]
+    end
+    
+    User([Пользователь]) -->|HTTP :80| Frontend
+    Admin([Администратор]) -->|HTTP :8000| Backend
