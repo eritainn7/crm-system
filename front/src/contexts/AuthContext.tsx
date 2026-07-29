@@ -15,7 +15,25 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(authService.getCurrentUser());
+  // Начинаем с null, а не с getCurrentUser()
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Загружаем пользователя после монтирования
+  useEffect(() => {
+    try {
+      const savedUser = authService.getCurrentUser();
+      if (savedUser) {
+        setUser(savedUser);
+      }
+    } catch (error) {
+      console.warn('Failed to load user, clearing storage');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const isAuthenticated = !!user;
 
@@ -33,6 +51,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await authService.logout();
     setUser(null);
   };
+
+  // Показываем загрузку только при первом рендере
+  if (isLoading) {
+    return null; 
+  }
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
