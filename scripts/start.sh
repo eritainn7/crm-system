@@ -25,6 +25,8 @@ export HOST_IP
 
 docker-compose down
 docker-compose up -d --build
+docker exec -it scooter-server cp .env.example .env 
+docker exec -it scooter-server php artisan key:generate --force 
 
 echo ""
 echo "========================================="
