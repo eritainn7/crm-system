@@ -15,6 +15,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - scooter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_service"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   # Laravel Backend
   server:
@@ -41,6 +47,31 @@ services:
       - postgres
     networks:
       - scooter-network
+    command: >
+      sh -c "
+        until pg_isready -h postgres -p 5432 -U postgres -d auth_service; do
+          echo 'Waiting for PostgreSQL...'
+          sleep 2
+        done
+        echo 'PostgreSQL is ready!'
+        php artisan migrate --force || echo 'Migration failed, but continuing...'
+        php-fpm
+      "
+
+
+  # Nginx для бэкенда
+  server-nginx:
+    image: nginx:alpine
+    container_name: scooter-server-nginx
+    volumes:
+      - ./server:/var/www/html
+      - ./server/docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - server
+    networks:
+      - scooter-network
 
   # React Frontend с Nginx
   front:
@@ -51,7 +82,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - server
+      - server-nginx
     networks:
       - scooter-network
 
