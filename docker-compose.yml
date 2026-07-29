@@ -49,6 +49,11 @@ services:
       - scooter-network
     command: >
       sh -c "
+        chown -R www-data:www-data /var/www/html/storage
+        chmod -R 775 /var/www/html/storage
+        chown -R www-data:www-data /var/www/html/bootstrap/cache
+        chmod -R 775 /var/www/html/bootstrap/cache
+
         until pg_isready -h postgres -p 5432 -U postgres -d auth_service; do
           echo 'Waiting for PostgreSQL...'
           sleep 2
