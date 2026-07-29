@@ -101,3 +101,10 @@ docker exec -it scooter-server cp .env.example .env
 ```bash
 docker exec -it scooter-server php artisan key:generate --force 
 ```
+
+### 3. Автоматический запуск
+
+```bash
+cd scripts
+source start.sh
+```
